@@ -16,7 +16,7 @@ build:
       - $maven_packages_cache
   artifacts:
     expire_in: 1 week
-    path:
+    paths:
       - target/*
   script:
     - mvn compile
