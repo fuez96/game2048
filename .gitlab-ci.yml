@@ -2,6 +2,7 @@ stages:
   - build
   - test
   - package
+  - deploy
 
 image: maven:3.8.1-jdk-11
 
@@ -55,3 +56,15 @@ package:
       - target/*.war
   script:
     - mvn package
+
+deploy_test:
+  stage: deploy
+  tags:
+    - shell
+  dependencies:
+    - package
+  script:
+    - docker rm --force game2048
+    - docker image rm --force game2048
+    - echo -e 'FROM tomcat:9.0.46-jdk11 \n COPY ./target/game2048.war usr/local/tomcat/webapps' | docker build -t game2048 -f- .
+    - docker run --rm -d --name game2048 -p 8080:8080 game2048
