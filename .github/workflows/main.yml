@@ -70,6 +70,7 @@ jobs:
         needs: package
         runs-on: self-hosted
 
+        steps:
         - uses: chrnorm/deployment-action@releases/v1
           name: Create GitHub deployment
           id: deployment
