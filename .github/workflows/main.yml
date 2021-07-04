@@ -65,5 +65,15 @@ jobs:
           uses: actions/upload-artifact@v2
           with:
             path: target/*.war
-        
-    
+            
+    deploy_test:
+        needs: package
+        runs-on: self-hosted
+
+        - uses: chrnorm/deployment-action@releases/v1
+          name: Create GitHub deployment
+          id: deployment
+          with:
+            token: "${{ github.token }}"
+            target_url: http://localhost:8080/game2048
+            environment: test
