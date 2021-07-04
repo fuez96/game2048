@@ -19,6 +19,7 @@ jobs:
       uses: actions/cache@v2
       with:
         path: env.maven_packages_cache
+        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
         
     - name: Archive code coverage results
       uses: actions/upload-artifact@v2
