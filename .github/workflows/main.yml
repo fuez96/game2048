@@ -3,12 +3,12 @@ name: CI/CD
 on: push
 
 jobs:
-  build:
-    runs-on: self-hosted
-  
   env:
     maven_packages_cache: .m2/repository
-
+    
+  build:
+    runs-on: self-hosted
+    
     steps:
     - name: Maven Compile
       run: mvn compile
