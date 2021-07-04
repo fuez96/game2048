@@ -6,22 +6,46 @@ env:
     maven_packages_cache: .m2/repository
 
 jobs:
-  build:
-    runs-on: self-hosted
+    build:
+        runs-on: self-hosted
+
+        steps:
+        - uses: actions/checkout@v2
+
+        - name: Maven Compile
+          run: mvn compile
+
+        - name: Cache
+          uses: actions/cache@v2
+          with:
+            path: env.maven_packages_cache
+            key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+
+        - name: Store artifacts
+          uses: actions/upload-artifact@v2
+          with:
+            path: target/*
     
-    steps:
-    - uses: actions/checkout@v2
-    
-    - name: Maven Compile
-      run: mvn compile
-      
-    - name: Cache Gradle packages
-      uses: actions/cache@v2
-      with:
-        path: env.maven_packages_cache
-        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+    test:
+        needs: build
+        runs-on: self-hosted
         
-    - name: Archive code coverage results
-      uses: actions/upload-artifact@v2
-      with:
-        path: target/*
+        steps:
+        - name: Maven Compile
+          run: mvn test
+          
+        - name: Cache
+          uses: actions/cache@v2
+          with:
+            path: env.maven_packages_cache
+            key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+            
+        - name: Store artifacts
+          uses: actions/upload-artifact@v2
+          with:
+            path: |
+            target/surefire-reports/*
+            target/site/jacoco/*
+
+        
+    
