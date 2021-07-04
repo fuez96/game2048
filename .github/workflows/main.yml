@@ -1,0 +1,28 @@
+name: CI/CD
+
+on:
+ push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: self-hosted
+  
+  env:
+    maven_packages_cache: .m2/repository
+
+    steps:
+    - name: Maven Compile
+      run: mvn compile
+      
+    - name: Cache Gradle packages
+      uses: actions/cache@v2
+      with:
+        path: env.maven_packages_cache
+        
+    - name: Archive code coverage results
+      uses: actions/upload-artifact@v2
+      with:
+        path: target/*
