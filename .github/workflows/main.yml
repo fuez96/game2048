@@ -31,7 +31,7 @@ jobs:
         runs-on: self-hosted
         
         steps:
-        - name: Maven Compile
+        - name: Maven Test
           run: mvn test
           
         - name: Cache
@@ -47,5 +47,23 @@ jobs:
                 target/surefire-reports/*
                 target/site/jacoco/*
 
+    package:
+        needs: build
+        runs-on: self-hosted
+        
+        steps:
+        - name: Maven Package
+          run: mvn test
+          
+        - name: Cache
+          uses: actions/cache@v2
+          with:
+            path: env.maven_packages_cache
+            key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+            
+        - name: Store artifacts
+          uses: actions/upload-artifact@v2
+          with:
+            path: target/*.war
         
     
